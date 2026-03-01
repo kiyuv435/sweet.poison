@@ -1,0 +1,103 @@
+:root {
+  --accent: #ff6b9a;
+  --bg-dark: #0e0610;
+  --text-light: rgba(255,255,255,0.85);
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #09020a, #1a0712);
+  font-family: 'Courier New', monospace;
+  color: var(--text-light);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#app {
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+}
+
+h1 {
+  color: var(--accent);
+  font-size: 3em;
+  text-shadow: 0 0 10px var(--accent);
+}
+
+.subtitle {
+  opacity: 0.8;
+  font-size: 1em;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  min-height: 100px;
+  transition: background 0.3s ease;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 2em; /* aumenta o emoji */
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+button:hover {
+  transform: scale(1.2);
+  text-shadow: 0 0 12px var(--accent);
+  box-shadow: 0 0 25px var(--accent);
+}
+
+button:active {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px var(--accent);
+}
+
+/* efeito de brilho pulsante para o hover */
+button::after {
+  content: '';
+  position: absolute;
+  top: -5px; left: -5px; right: -5px; bottom: -5px;
+  border-radius: 14px;
+  box-shadow: 0 0 15px rgba(255,107,154,0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+button:hover::after {
+  opacity: 1;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px rgba(255,107,154,0.3); }
+  50% { box-shadow: 0 0 25px rgba(255,107,154,0.6); }
+  100% { box-shadow: 0 0 10px rgba(255,107,154,0.3); }
+}
+
+.hint {
+  font-size: 0.9em;
+  opacity: 0.6;
+  margin-top: 20px;
+}

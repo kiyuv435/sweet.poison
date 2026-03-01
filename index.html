@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sweet Poison</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="scene intro">
+    <header>
+      <h1>Sweet Poison</h1>
+      <p class="subtitle">Uma jornada doce — e levemente envenenada — de escolhas.</p>
+    </header>
+
+    <main>
+      <section id="narration" class="card">
+        <p id="text">Você se encontra em uma clareira onde quatro sinais brilham: 🎀 🍓 🕸️ 🕷️</p>
+      </section>
+
+      <div id="choices" class="choices">
+        <button data-choice="laco">🎀</button>
+        <button data-choice="morango">🍓</button>
+        <button data-choice="teia">🕸️</button>
+        <button data-choice="aranha">🕷️</button>
+      </div>
+
+      <div id="hint" class="hint">Dica: suas escolhas podem ser sussurradas pelas sombras...</div>
+    </main>
+
+    <footer>
+      <small>Desenvolvido — Sweet Poison</small>
+    </footer>
+
+    <!-- sons -->
+    <audio id="bg" loop preload="auto">
+      <source src="https://cdn.pixabay.com/download/audio/2022/11/07/audio_7f2e6f29b4.mp3?filename=dreamy-ambient-111577.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-whisper" preload="auto">
+      <source src="https://cdn.pixabay.com/download/audio/2022/02/23/audio_3c3d1d70b8.mp3?filename=ghost-whispers-13760.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-teia" preload="auto">
+      <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0cf0fbc9a7.mp3?filename=spider-steps-13827.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    const textEl = document.getElementById('text');
+    const choicesEl = document.getElementById('choices');
+    const bg = document.getElementById('bg');
+    const sfxWhisper = document.getElementById('sfx-whisper');
+    const sfxTeia = document.getElementById('sfx-teia');
+
+    let initiated = false;
+
+    const NARRATIVE = {
+      intro: {
+        text: 'Você se encontra em uma clareira onde quatro sinais brilham: 🎀 🍓 🕸️ 🕷️',
+        choices: [
+          { id: 'laco', label: '🎀' },
+          { id: 'morango', label: '🍓' },
+          { id: 'teia', label: '🕸️' },
+          { id: 'aranha', label: '🕷️' }
+        ]
+      },
+      // 🎀 LAÇO
+      laco: {
+        text: 'O 🎀 pulsa com luz pálida. Você pode puxar a fita ou cortar o laço.',
+        choices: [
+          { id: 'laco_puxar', label: 'Puxar a fita' },
+          { id: 'laco_cortar', label: 'Cortar o laço' }
+        ]
+      },
+      laco_puxar: {
+        text: 'Ao puxar, a noite se abre como tecido. Uma porta feita de névoa surge.',
+        choices: [
+          { id: 'porta_entrar', label: 'Entrar na porta' },
+          { id: 'voltar', label: 'Voltar' }
+        ]
+      },
+      porta_entrar: {
+        text: 'Dentro, você encontra um espelho antigo. Ele mostra futuros alternativos. Qual refletir?',
+        choices: [
+          { id: 'espelho_feliz', label: 'Futuro feliz' },
+          { id: 'espelho_sombrio', label: 'Futuro sombrio' }
+        ]
+      },
+      espelho_feliz: {
+        text: 'O espelho sorri para você. Um sentimento de calma invade seu coração. ✨',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      espelho_sombrio: {
+        text: 'O reflexo ri maliciosamente. Algo frio toca seu ombro. ❄️',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      laco_cortar: {
+        text: 'Ao cortar o 🎀, ele se desfaz em fumaça rosa, liberando um caminho secreto.',
+        choices: [{ id: 'caminho_secreto', label: 'Seguir o caminho' }]
+      },
+      caminho_secreto: {
+        text: 'O caminho leva a um jardim de névoa onde flores murmuram segredos. Você pode ouvir ou ignorar.',
+        choices: [
+          { id: 'ouvir_segredos', label: 'Ouvir os segredos' },
+          { id: 'ignorar_segredos', label: 'Ignorar e seguir' }
+        ]
+      },
+      ouvir_segredos: {
+        text: 'As flores sussurram antigas histórias de quem escolheu caminhos diferentes. Você se sente mais sábio.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      ignorar_segredos: {
+        text: 'Você passa pelo jardim em silêncio. Um vento frio lembra que nem tudo que se ignora desaparece.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      // 🍓 MORANGO
+      morango: {
+        text: 'O ar é doce e pesado. Um 🍓 aparece, exalando perfume de lembranças. Beber ou guardar?',
+        choices: [
+          { id: 'beber', label: 'Beber do jarro' },
+          { id: 'guardar', label: 'Guardar o jarro' }
+        ]
+      },
+      beber: {
+        text: 'O líquido colore seus pensamentos. Você vê alguém que poderia ter sido você.',
+        choices: [
+          { id: 'seguir_lembrancas', label: 'Seguir as lembranças' },
+          { id: 'voltar', label: 'Voltar à clareira' }
+        ]
+      },
+      seguir_lembrancas: {
+        text: 'Você caminha em um corredor de memórias. Uma porta dourada surge: entrar ou sair?',
+        choices: [
+          { id: 'porta_dourada_entrar', label: 'Entrar na porta' },
+          { id: 'voltar', label: 'Voltar à clareira' }
+        ]
+      },
+      porta_dourada_entrar: {
+        text: 'Dentro da sala, ecos do passado lhe mostram escolhas que você nunca fez. Um sentimento agridoce invade você.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      guardar: {
+        text: 'Você guarda o jarro. Pétalas vermelhas caem, revelando um caminho oculto.',
+        choices: [
+          { id: 'explorar_caminho_oculto', label: 'Explorar o caminho' },
+          { id: 'voltar', label: 'Voltar à clareira' }
+        ]
+      },
+      explorar_caminho_oculto: {
+        text: 'O caminho leva a uma clareira silenciosa. Sombras dançam nas árvores. Você pode investigar ou descansar.',
+        choices: [
+          { id: 'investigar_sombras', label: 'Investigar sombras' },
+          { id: 'descansar_clareira', label: 'Descansar' }
+        ]
+      },
+      investigar_sombras: {
+        text: 'As sombras formam rostos familiares. Um sussurro: “Escolha sabiamente”.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      descansar_clareira: {
+        text: 'Você sente tranquilidade, mas algo o observa de longe. 👁️',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      // 🕸️ TEIA
+      teia: {
+        text: 'A 🕸️ vibra como se respirasse. Esperar ou rasgar?',
+        choices: [
+          { id: 'esperar', label: 'Esperar' },
+          { id: 'rasgar', label: 'Rasgar' }
+        ]
+      },
+      esperar: {
+        text: 'Uma 🕷️ desce suavemente. Ela o observa — e fala em silêncio. Aceitar a mensagem ou ignorar?',
+        choices: [
+          { id: 'aceitar_mensagem', label: 'Aceitar a mensagem' },
+          { id: 'ignorar_mensagem', label: 'Ignorar' }
+        ]
+      },
+      aceitar_mensagem: {
+        text: 'A aranha revela segredos sobre a floresta e o tempo. Você sente um novo conhecimento.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      ignorar_mensagem: {
+        text: 'Você ignora. A 🕷️ desaparece, deixando você sozinho com perguntas.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      rasgar: {
+        text: 'Ao rasgar a teia, fios brilham e memórias escapam. Algo mudou em você.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      // 🕷️ ARANHA
+      aranha: {
+        text: 'Uma sombra de olhos rubros surge. Ela oferece uma escolha: aliança ou liberdade.',
+        choices: [
+          { id: 'aceitar', label: 'Aceitar' },
+          { id: 'recusar', label: 'Recusar' }
+        ]
+      },
+      aceitar: {
+        text: 'Você aceita. Um fio prende seu pulso, e a floresta se curva em reverência.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      recusar: {
+        text: 'A sombra recua. Você sente o vento frio — mas algo ainda o observa.',
+        choices: [{ id: 'voltar', label: 'Voltar à clareira' }]
+      },
+      voltar: {
+        text: 'Você retorna à clareira. Os quatro sinais brilham novamente: 🎀 🍓 🕸️ 🕷️',
+        choices: [
+          { id: 'laco', label: '🎀' },
+          { id: 'morango', label: '🍓' },
+          { id: 'teia', label: '🕸️' },
+          { id: 'aranha', label: '🕷️' }
+        ]
+      }
+    };
+
+    function renderNode(id) {
+      const node = NARRATIVE[id] || NARRATIVE['intro'];
+      textEl.textContent = node.text;
+      choicesEl.innerHTML = '';
+      node.choices.forEach(c => {
+        const btn = document.createElement('button');
+        btn.textContent = c.label;
+        btn.onclick = () => renderNode(c.id);
+        choicesEl.appendChild(btn);
+      });
+      playAudio(id);
+    }
+
+    function playAudio(id) {
+      if (!initiated) {
+        bg.volume = 0.2;
+        bg.play();
+        initiated = true;
+      }
+      if (id.includes('teia')) {
+        sfxTeia.volume = 0.2;
+        sfxTeia.play();
+      } else if (id.includes('laco') || id.includes('morango')) {
+        sfxWhisper.volume = 0.2;
+        sfxWhisper.play();
+      }
+    }
+
+    renderNode('intro');
+  </script>
+</body>
+</html>
