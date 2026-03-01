@@ -229,15 +229,15 @@
 
     function playAudio(id) {
       if (!initiated) {
-        bg.volume = 0.2;
+        bg.volume = 10;
         bg.play();
         initiated = true;
       }
       if (id.includes('teia')) {
-        sfxTeia.volume = 0.2;
+        sfxTeia.volume = 10;
         sfxTeia.play();
       } else if (id.includes('laco') || id.includes('morango')) {
-        sfxWhisper.volume = 0.2;
+        sfxWhisper.volume = 10;
         sfxWhisper.play();
       }
     }
@@ -245,4 +245,5 @@
     renderNode('intro');
   </script>
 </body>
+
 </html>
